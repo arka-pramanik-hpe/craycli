@@ -4,10 +4,10 @@ info:
   version: 1.0.0
   description: API for fetching Kubernetes node zone information
 servers:
-  - url: http://{node_ip}:8080
+  - url: http://10.28.13.53:8080
     variables:
       node_ip:
-        default: "localhost"
+        default: "10.28.13.53"
         description: IP address of the node running the service
 
 paths:
