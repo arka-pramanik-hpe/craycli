@@ -3,25 +3,19 @@
     "info": {
         "title": "RRS Service API",
         "version": "1.0.0",
-        "description": "The RRS Service API provides information about available zones. Use this endpoint to retrieve detailed information such as the number of masters, workers, storage units, and the rack xname for each zone.\n"
+        "description": "The RRS Service API provides detailed information about available zones. This endpoint returns the number of masters, workers, storage nodes, and an array of rack xnames for each zone. Note: This API is deployed behind an Istio VirtualService that rewrites paths (e.g. from /apis/ims/ to /) for proper routing.\n"
     },
     "servers": [
         {
-            "url": "https://api-gw-service-nmn.local/apis/rrs",
-            "description": "The production RRS API server. Accessed from outside the mesh."
-        }
-    ],
-    "tags": [
-        {
-            "name": "Zones",
-            "description": "Endpoints related to Kubernetes zone data."
+            "url": "http://localhost:8080",
+            "description": "Backend server for the RRS service"
         }
     ],
     "paths": {
         "/zones": {
             "get": {
                 "summary": "Retrieve Zone Information",
-                "description": "Returns a list of zones with their respective details. For example, you can expect to see zone names along with counts of masters, workers, storage units, and rack xname data.\n",
+                "description": "Returns a list of zones with detailed properties including the counts of master, worker, and storage nodes, along with an array of rack xnames for each zone.\n",
                 "operationId": "getZones",
                 "responses": {
                     "200": {
@@ -54,9 +48,14 @@
                                                 "example": 0
                                             },
                                             "rack-xname": {
-                                                "type": "string",
-                                                "description": "The rack xname associated with the zone.",
-                                                "example": "unknown"
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                },
+                                                "description": "An array of rack xnames associated with the zone.",
+                                                "example": [
+                                                    "unknown"
+                                                ]
                                             }
                                         }
                                     }
@@ -69,14 +68,27 @@
                                                 "no_of_masters": 1,
                                                 "no_of_workers": 1,
                                                 "no_of_storage": 0,
-                                                "rack-xname": "unknown"
+                                                "rack-xname": [
+                                                    "unknown"
+                                                ]
                                             },
                                             {
                                                 "zone-name": "zone2",
                                                 "no_of_masters": 1,
                                                 "no_of_workers": 1,
                                                 "no_of_storage": 0,
-                                                "rack-xname": "unknown"
+                                                "rack-xname": [
+                                                    "unknown"
+                                                ]
+                                            },
+                                            {
+                                                "zone-name": "zone3",
+                                                "no_of_masters": 1,
+                                                "no_of_workers": 2,
+                                                "no_of_storage": 0,
+                                                "rack-xname": [
+                                                    "unknown"
+                                                ]
                                             }
                                         ]
                                     }
@@ -85,19 +97,7 @@
                         }
                     },
                     "404": {
-                        "description": "Resource Not Found - The requested zones could not be found.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        "description": "Resource Not Found - No zones were found."
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -132,9 +132,14 @@
                         "example": 0
                     },
                     "rack-xname": {
-                        "type": "string",
-                        "description": "The rack xname associated with the zone.",
-                        "example": "unknown"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "An array of rack xnames associated with the zone.",
+                        "example": [
+                            "unknown"
+                        ]
                     }
                 }
             }
